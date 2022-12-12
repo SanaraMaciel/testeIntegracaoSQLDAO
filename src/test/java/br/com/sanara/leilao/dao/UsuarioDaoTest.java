@@ -17,7 +17,8 @@ class UsuarioDaoTest {
 
 	private EntityManager em;
 
-	// recurso do junit para inicializar antes de cada um dos testes inicializar o  em
+	// recurso do junit para inicializar antes de cada um dos testes inicializar o
+	// em
 	@BeforeEach
 	public void beforeEach() {
 		this.em = JPAUTil.getEntityManager();
@@ -55,6 +56,13 @@ class UsuarioDaoTest {
 	void testNaoDeveriaEncontrarUsuarioCadastradoPeloUsername() {
 		criarUsuario();
 		Assert.assertThrows(NoResultException.class, () -> this.dao.buscarPorUsername("beltrano"));
+	}
+
+	@Test
+	void deveriaRemoverUmUsuario() {
+		Usuario usuario = criarUsuario();
+		dao.deletar(usuario);
+		Assert.assertThrows(NoResultException.class, () -> this.dao.buscarPorUsername(usuario.getNome()));
 	}
 
 }
