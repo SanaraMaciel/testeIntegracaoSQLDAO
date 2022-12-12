@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import br.com.sanara.leilao.model.Leilao;
 import br.com.sanara.leilao.model.Usuario;
 import br.com.sanara.leilao.util.JPAUTil;
+import br.com.sanara.leilao.util.LeilaoBuilder;
+import br.com.sanara.leilao.util.UsuarioBuilder;
 
 class LeilaoDaoTest {
 
@@ -36,17 +38,17 @@ class LeilaoDaoTest {
 		this.em.getTransaction().rollback();
 	}
 
-	private Usuario criarUsuario() {
-		Usuario usuario = new Usuario("fulano", "fulano@email.com", "12345678");
-		// faz a persistencia do novo usuário
-		this.em.persist(usuario);
-		return usuario;
-	}
-
 	@Test
 	void testDeveriaCadastrarUmLeilao() {
-		Usuario usuario = criarUsuario();
-		Leilao leilao = new Leilao("mochila", new BigDecimal("70.00"), LocalDate.now(), usuario);
+
+		// criando um usuário com o padrão builder
+		Usuario usuario = new UsuarioBuilder().comNome("fulano").comEmail("fulano@email.com").comSenha("12345678")
+				.criar();
+		this.em.persist(usuario);
+
+		Leilao leilao = new LeilaoBuilder().comNome("Mochila").comValorInicial("500").comData(LocalDate.now())
+				.comUsuario(usuario).criar();
+
 		leilao = dao.salvar(leilao);
 
 //		verificando se o leilão foi persisitido através da busca dele
@@ -56,8 +58,15 @@ class LeilaoDaoTest {
 
 	@Test
 	void testDeveriaAtualizarUmLeilao() {
-		Usuario usuario = criarUsuario();
-		Leilao leilao = new Leilao("mochila", new BigDecimal("70.00"), LocalDate.now(), usuario);
+
+		// criando um usuário com o padrão builder
+		Usuario usuario = new UsuarioBuilder().comNome("fulano").comEmail("fulano@email.com").comSenha("12345678")
+				.criar();
+		this.em.persist(usuario);
+
+		Leilao leilao = new LeilaoBuilder().comNome("Mochila").comValorInicial("500").comData(LocalDate.now())
+				.comUsuario(usuario).criar();
+
 		leilao = dao.salvar(leilao);
 
 		leilao.setNome("Celular");
